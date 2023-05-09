@@ -35,7 +35,7 @@ test <- factor_car_df[-tIndex, ]
 summary(train)
 summary(test)
 #forest model method
-ForestModel1 <- train(Acceptability ~ ., 
+ForestModel1 <- train(Acceptability ~ Price + Maintenance + Safety + Cargo + Doors + Seats, 
                       data = factor_car_df, 
                       method = "rf")
 ForestModel1
@@ -48,7 +48,7 @@ ggplot(heatmap, aes(x = Reference, y = Prediction, fill = Freq)) +
   scale_fill_gradientn(colors = hcl.colors(16, "RdYlGn")) + 
   ggtitle("Forest: Model 1")
 #nnet method
-nnetModel2 <- train(Acceptability ~ ., 
+nnetModel2 <- train(Acceptability ~ Price + Maintenance + Safety + Cargo + Doors + Seats, 
                       data = factor_car_df, 
                       method = "nnet")
 nnetModel2
@@ -61,7 +61,7 @@ ggplot(heatmap2, aes(x = Reference, y = Prediction, fill = Freq)) +
   scale_fill_gradientn(colors = hcl.colors(16, "RdYlGn")) + 
   ggtitle("NNET: Model 2")
 # ranger method.
-Model3 <- train(Acceptability ~ ., 
+Model3 <- train(Acceptability ~ Price + Maintenance + Safety + Cargo + Doors + Seats, 
                     data = factor_car_df, 
                     method = "ranger")
 Model3
