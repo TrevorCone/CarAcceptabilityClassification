@@ -3,9 +3,8 @@ library(tidyverse)
 library(ggplot2)
 library(randomForest)
 library(devtools)
-library(ranger)
 source_url('https://gist.githubusercontent.com/fawda123/7471137/raw/466c1474d0a505ff044412703516c34f1a4684a5/nnet_plot_update.r')
-
+library(ranger)
 #Read in the file from 
 #https://www.kaggle.com/datasets/subhajeetdas/car-acceptability-classification-dataset?select=car.csv
 fileRead <- read.csv("car.csv")
@@ -25,10 +24,11 @@ Safety<- as.factor(car_df$Safety)
 Acceptability <- as.factor(car_df$Car_Acceptability)
 factor_car_df <- data.frame(Price, Maintenance, Doors, Seats, Cargo, Safety, Acceptability)
 head(factor_car_df)
+summary(factor_car_df)
 # Split data into training and test
 set.seed(4)
 #The split is defined here at 0.6 so we will get a 60/40 split
-split <- 0.6
+split <- 0.85
 tIndex <- sample(1:nrow(factor_car_df), split * nrow(factor_car_df))
 train <- factor_car_df[tIndex, ]
 test <- factor_car_df[-tIndex, ]
@@ -36,7 +36,7 @@ summary(train)
 summary(test)
 #forest model method
 ForestModel1 <- train(Acceptability ~ Price + Maintenance + Safety + Cargo + Doors + Seats, 
-                      data = factor_car_df, 
+                      data = train, 
                       method = "rf")
 ForestModel1
 Model1_Prediction <- predict(ForestModel1, test)
@@ -49,7 +49,7 @@ ggplot(heatmap, aes(x = Reference, y = Prediction, fill = Freq)) +
   ggtitle("Forest: Model 1")
 #nnet method
 nnetModel2 <- train(Acceptability ~ Price + Maintenance + Safety + Cargo + Doors + Seats, 
-                      data = factor_car_df, 
+                      data = train, 
                       method = "nnet")
 nnetModel2
 Model2_Prediction <- predict(nnetModel2, test)
@@ -62,7 +62,7 @@ ggplot(heatmap2, aes(x = Reference, y = Prediction, fill = Freq)) +
   ggtitle("NNET: Model 2")
 # ranger method.
 Model3 <- train(Acceptability ~ Price + Maintenance + Safety + Cargo + Doors + Seats, 
-                    data = factor_car_df, 
+                    data = train, 
                     method = "ranger")
 Model3
 Model3_Prediction <- predict(Model3,test)
